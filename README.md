@@ -178,8 +178,11 @@ user: I could use some help deciding. [travel_brainstormer]: Okay! To give you t
 13.  At the `user:` prompt, enter **exit** to end the conversation.
     
 14.  You can also provide your agent more detailed instructions about when to transfer to a sub-agent as part of its `instructions`. In the **agent.py** file, add the following lines to the **root_agent**'s `instruction`:
-    
-    If they need help deciding, send them to 'travel_brainstormer'. If they know what country they'd like to visit, send them to the 'attractions_planner'.
+
+```    
+    If they need help deciding, send them to 'travel_brainstormer'. 
+    If they know what country they'd like to visit, send them to the 'attractions_planner'.
+``` 
 15.  **Save** the file.
     
 16.  In the Cloud Shell Terminal, run the following to start the command line interface again:
