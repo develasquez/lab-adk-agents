@@ -93,8 +93,8 @@ In this lab environment, the **Vertex AI API has been enabled for you**. If you 
 1.  Paste the following commands into the Cloud Shell Terminal to copy code files from a Cloud Storage bucket for this lab:
 
 ```sh    
-    git clone https://github.com/develasquez/lab-adk-agents.git
-    cd lab-adk-agents
+git clone https://github.com/develasquez/lab-adk-agents.git
+cd lab-adk-agents
 ```
 
 2.  Update your `PATH` environment variable, **install ADK**, and install additional lab requirements by running the following commands in the Cloud Shell Terminal.
@@ -113,21 +113,20 @@ You can help guide those transfers in the parent's `instruction` by referring to
 
 
 ```sh    
+cd adk_multiagent_systems;
 
-    cd adk_multiagent_systems;
-    
-    cat << EOF > parent_and_subagents/.env 
-    GOOGLE_GENAI_USE_VERTEXAI=TRUE 
-    GOOGLE_CLOUD_PROJECT=<PROJECT_ID>
-    GOOGLE_CLOUD_LOCATION=global 
-    MODEL=gemini-2.5-flash
-    EOF
+cat << EOF > parent_and_subagents/.env 
+GOOGLE_GENAI_USE_VERTEXAI=TRUE 
+GOOGLE_CLOUD_PROJECT=<PROJECT_ID>
+GOOGLE_CLOUD_LOCATION=global 
+MODEL=gemini-2.5-flash
+EOF
 ```
 
 2.  Run the following command to copy that `.env` file to the **workflow_agents** directory, which you will use later in the lab:
 
 ```sh
-    cp parent_and_subagents/.env workflow_agents/.env
+cp parent_and_subagents/.env workflow_agents/.env
 ```
 
 
@@ -146,7 +145,7 @@ You can help guide those transfers in the parent's `instruction` by referring to
 6.  Make **travel_brainstormer** and **attractions_planner** sub-agents of the **root_agent** by adding the following line to the creation of the **root_agent**:
 
 ```py
-    sub_agents=[travel_brainstormer, attractions_planner]
+sub_agents=[travel_brainstormer, attractions_planner]
 ```
 
 7.  **Save** the file.
@@ -156,24 +155,24 @@ You can help guide those transfers in the parent's `instruction` by referring to
 9.  In the Cloud Shell Terminal, run the following to use the ADK command line interface to chat with your agent:
 
 ```sh    
-    cd ~/adk_multiagent_systems adk run parent_and_subagents
+cd ~/adk_multiagent_systems adk run parent_and_subagents
 ```
 
 10.  When you are presented the `[user]:` prompt, greet the agent with:
 ```    
-    hello
+hello
 ```    
     **Example output (yours may be a little different):**
 ```    
-    user: hello [steering]: Hi there! Do you already have a country in mind for your trip, or would you like some help deciding where to go?
+user: hello [steering]: Hi there! Do you already have a country in mind for your trip, or would you like some help deciding where to go?
 ```
 11.  Tell the agent:
 ```    
-    I could use some help deciding.
+I could use some help deciding.
 ```    
     **Example output (yours may be a little different):**
 ```    
-    user: I could use some help deciding. [travel_brainstormer]: Okay! To give you the best recommendations, I need to understand what you're looking for in a trip. ...
+user: I could use some help deciding. [travel_brainstormer]: Okay! To give you the best recommendations, I need to understand what you're looking for in a trip. ...
 ```
 12.  Notice from the name **[travel_brainstormer]** in brackets in the response that the **root_agent** (named **[steering]**) has transferred the conversation to the appropriate sub-agent based on that sub-agent's `description` alone.
     
@@ -186,22 +185,22 @@ You can help guide those transfers in the parent's `instruction` by referring to
     
 16.  In the Cloud Shell Terminal, run the following to start the command line interface again:
 ```sh    
-    adk run parent_and_subagents
+adk run parent_and_subagents
 ```
 
 17.  Greet the agent with:
 
 ```    
-    hello
+hello
 ```
 
 18.  Reply to the agent's greeting with:
 ```    
-    I would like to go to Japan.
+I would like to go to Japan.
 ```    
-    **Example output (yours may be a little different):**
+**Example output (yours may be a little different):**
 ```    
-    user: I would like to go to Japan. [attractions_planner]: Okay, I can help you with that! Here are some popular attractions in Japan: * **Tokyo:** * Senso-ji Temple * Shibuya Crossing * Tokyo Skytree * **Kyoto:** ...
+user: I would like to go to Japan. [attractions_planner]: Okay, I can help you with that! Here are some popular attractions in Japan: * **Tokyo:** * Senso-ji Temple * Shibuya Crossing * Tokyo Skytree * **Kyoto:** ...
 ```
 
 19.  Notice that you have been transferred to the other sub-agent, **attractions_planner**.
@@ -209,11 +208,11 @@ You can help guide those transfers in the parent's `instruction` by referring to
 20.  Reply with:
 
 ```    
-    Actually I don't know what country to visit.
+Actually I don't know what country to visit.
 ```    
     **Example output (yours may be a little different):**
 ```    
-    user: actually I don't know what country to visit [travel_brainstormer]: Okay! I can help you brainstorm some countries for travel...
+user: actually I don't know what country to visit [travel_brainstormer]: Okay! I can help you brainstorm some countries for travel...
 ```
 21.  Notice you have been transferred to the **travel_brainstormer** agent, which is a **peer** agent to the **attractions_planner**. This is allowed by default. If you wanted to prevent transfers to peers, you could have set the `disallow_transfer_to_peers` parameter to `True` on the **attractions_planner** agent.
     
@@ -238,7 +237,7 @@ To explore adding to and reading from state:
     
 
 ```py
-    def save_attractions_to_state(
+def save_attractions_to_state(
     tool_context: ToolContext,
     attractions: List[str]
 ) -> dict[str, str]:
@@ -268,22 +267,22 @@ To explore adding to and reading from state:
     *   The commented function code demonstrates how easy it is to make updates to the state dictionary.
 4.  Add the tool to the **attractions_planner** agent by adding the `tools` parameter when the agent is created:
 ```py   
-    tools=[save_attractions_to_state]
+tools=[save_attractions_to_state]
 ```
 5.  Add the following bullet points to the **attractions_planner** agent's existing `instruction`:
 ```
-    - When they reply, use your tool to save their selected attraction and then provide more possible attractions. - If they ask to view the list, provide a bulleted list of { attractions? } and then suggest some more.
+- When they reply, use your tool to save their selected attraction and then provide more possible attractions. - If they ask to view the list, provide a bulleted list of { attractions? } and then suggest some more.
 ```
 
 6.  Notice the section in curly braces: `{ attractions? }`. This ADK feature, [key templating](https://google.github.io/adk-docs/sessions/state/#using-key-templating), loads the value of the `attractions` key from the state dictionary. The question mark after the `attractions` key prevents this from erroring if the field is not yet present.
     
 7.  You will now run the agent from the web interface, which provides a tab for you to see the changes being made to the session state. **Launch the Agent Development Kit Web UI** with the following command:
 ```sh  
-    adk web --allow_origins "regex:https://.*.cloudshell.dev"
+adk web --allow_origins "regex:https://.*.cloudshell.dev"
 ```
     **Output**
 ```    
-    INFO: Started server process [2434] INFO: Waiting for application startup. +-------------------------------------------------------+ | ADK Web Server started | | | | For local testing, access at http://localhost:8000. | +-------------------------------------------------------+ INFO: Application startup complete. INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO: Started server process [2434] INFO: Waiting for application startup. +-------------------------------------------------------+ | ADK Web Server started | | | | For local testing, access at http://localhost:8000. | +-------------------------------------------------------+ INFO: Application startup complete. INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 ```
 8.  To view the web interface in a new tab, click the **http://127.0.0.1:8000** link in the Terminal output.
     
@@ -295,13 +294,13 @@ To explore adding to and reading from state:
     
 12.  After the agent greets you, reply with:
 ```    
-    I'd like to go to Egypt.
+I'd like to go to Egypt.
  ```   
     You should be transferred to the **attractions_planner** and be provided a list of attractions.
     
 13.  Choose an attraction, for example:
 ```    
-    I'll go to the Sphinx
+I'll go to the Sphinx
 ```
 
 14.  You should receive an acknowledgement in the response, like: *Okay, I've saved The Sphinx to your list. Here are some other attractions...*
@@ -318,7 +317,7 @@ To explore adding to and reading from state:
 
 19.  Send this message to the agent:
 ```   
-    What is on my list?
+What is on my list?
 ```
 
 20.  It should return your list formatted as a bulleted list according to its `instruction`.
@@ -386,8 +385,8 @@ In this task, you will run a `SequentialAgent` to build a first version of your 
 5.  Try out the current version of the agent by launching the web interface from the Cloud Shell Terminal. You will use the `--reload_agents` argument to enable live reloading of agents based on agent changes:
 
 ```sh
-    cd adk_multiagent_systems
-    adk web --allow_origins "regex:https://.*.cloudshell.dev" --reload_agents
+cd adk_multiagent_systems
+adk web --allow_origins "regex:https://.*.cloudshell.dev" --reload_agents
 ```
     
     **Note:** If you did not shut down your previous `adk web` session, the default port of 8000 will be blocked, but you can launch the Dev UI with a new port by using `adk web --port 8001`, for example.
@@ -452,8 +451,8 @@ To make these changes:
 1.  In the **adk_multiagent_systems/workflow_agents/agent.py** file, add this tool import so that you can provide an agent the ability to exit the loop when desired:
 
 ```py    
-    from google.adk.tools import exit_loop 
-    from google.adk.models import Gemini
+from google.adk.tools import exit_loop 
+from google.adk.models import Gemini
 ```
 
 2.  To determine when to exit the loop, add this **critic** agent to decide when the plot outline is ready. Paste the following new agent into the **agent.py** file under the **# Agents** section header (without overwriting the existing agents). Note that it has the `exit_loop` tool as one of its tools and instructions on when to use it:
