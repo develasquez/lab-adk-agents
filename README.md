@@ -116,9 +116,9 @@ You can help guide those transfers in the parent's `instruction` by referring to
 cd adk_multiagent_systems
 cat << EOF > parent_and_subagents/.env
 GOOGLE_GENAI_USE_VERTEXAI=TRUE
-GOOGLE_CLOUD_PROJECT=YOUR_GCP_PROJECT_ID
+GOOGLE_CLOUD_PROJECT=<YOUR_GCP_PROJECT_ID>
 GOOGLE_CLOUD_LOCATION=global
-MODEL=gemini_flash_model_id
+MODEL=gemini-2.5-flash
 EOF
 ```
 
